@@ -15,16 +15,21 @@
         }
 
         :root {
-            --bg: #FFF8F0;
+            --bg: #FFF5F5;
             --card-bg: #FFFFFF;
-            --primary: #E8725A;
-            --primary-light: rgba(232, 114, 90, 0.08);
-            --primary-border: rgba(232, 114, 90, 0.25);
-            --primary-shadow: rgba(232, 114, 90, 0.25);
+            --primary: #E8636F;
+            --primary-light: rgba(232, 99, 111, 0.08);
+            --primary-border: rgba(232, 99, 111, 0.25);
+            --primary-shadow: rgba(232, 99, 111, 0.25);
             --text: #3D2C2C;
             --text-muted: #9B8A8A;
-            --tag-bg: #FFF0ED;
-            --border: #F0E4DE;
+            --tag-bg: #FFF0EE;
+            --border: #F0E0DE;
+            --heart-1: #E8636F;
+            --heart-2: #F4A0A8;
+            --heart-3: #FFCDD2;
+            --heart-4: #FF8A95;
+            --heart-5: #D14D5A;
         }
 
         body {
@@ -40,6 +45,173 @@
             padding: 2rem 1rem;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            position: relative;
+        }
+
+        /* ---- Floating Hearts Background ---- */
+        .floating-hearts {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-heart {
+            position: absolute;
+            bottom: -30px;
+            animation: floatUp linear infinite;
+            opacity: 0;
+        }
+
+        .floating-heart svg {
+            fill: var(--heart-1);
+            filter: drop-shadow(0 0 2px rgba(232, 99, 111, 0.15));
+        }
+
+        .fh-1 {
+            left: 5%;
+            animation-duration: 14s;
+            animation-delay: 0s;
+        }
+
+        .fh-1 svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--heart-3);
+        }
+
+        .fh-2 {
+            left: 15%;
+            animation-duration: 11s;
+            animation-delay: 2s;
+        }
+
+        .fh-2 svg {
+            width: 12px;
+            height: 12px;
+            fill: var(--heart-2);
+        }
+
+        .fh-3 {
+            left: 28%;
+            animation-duration: 16s;
+            animation-delay: 4s;
+        }
+
+        .fh-3 svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--heart-4);
+        }
+
+        .fh-4 {
+            left: 42%;
+            animation-duration: 12s;
+            animation-delay: 1s;
+        }
+
+        .fh-4 svg {
+            width: 10px;
+            height: 10px;
+            fill: var(--heart-3);
+        }
+
+        .fh-5 {
+            left: 55%;
+            animation-duration: 15s;
+            animation-delay: 3s;
+        }
+
+        .fh-5 svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--heart-2);
+        }
+
+        .fh-6 {
+            left: 68%;
+            animation-duration: 13s;
+            animation-delay: 5s;
+        }
+
+        .fh-6 svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--heart-3);
+        }
+
+        .fh-7 {
+            left: 78%;
+            animation-duration: 17s;
+            animation-delay: 0.5s;
+        }
+
+        .fh-7 svg {
+            width: 11px;
+            height: 11px;
+            fill: var(--heart-4);
+        }
+
+        .fh-8 {
+            left: 90%;
+            animation-duration: 10s;
+            animation-delay: 6s;
+        }
+
+        .fh-8 svg {
+            width: 15px;
+            height: 15px;
+            fill: var(--heart-2);
+        }
+
+        .fh-9 {
+            left: 35%;
+            animation-duration: 18s;
+            animation-delay: 7s;
+        }
+
+        .fh-9 svg {
+            width: 9px;
+            height: 9px;
+            fill: var(--heart-3);
+        }
+
+        .fh-10 {
+            left: 82%;
+            animation-duration: 14s;
+            animation-delay: 3.5s;
+        }
+
+        .fh-10 svg {
+            width: 13px;
+            height: 13px;
+            fill: var(--heart-4);
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(0) translateX(0) rotate(0deg) scale(0.6);
+            }
+
+            10% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: translateY(-50vh) translateX(20px) rotate(25deg) scale(1);
+            }
+
+            80% {
+                opacity: 0.2;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-105vh) translateX(-15px) rotate(-15deg) scale(0.8);
+            }
         }
 
         /* ---- Layout ---- */
@@ -50,6 +222,8 @@
             flex-direction: column;
             align-items: center;
             gap: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
         /* ---- Header ---- */
@@ -69,16 +243,37 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+        }
+
+        .icon-circle::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(232, 99, 111, 0.12);
+            animation: heartBeat 2s ease-in-out infinite;
+        }
+
+        @keyframes heartBeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: scale(1.15);
+                opacity: 0;
+            }
         }
 
         .icon-circle svg {
             width: 28px;
             height: 28px;
-            stroke: var(--primary);
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+            stroke: none;
+            fill: var(--primary);
         }
 
         h1 {
@@ -170,6 +365,7 @@
             will-change: transform;
         }
 
+        /* Front */
         .card-front {
             background: var(--card-bg);
             border: 2px solid var(--border);
@@ -181,7 +377,85 @@
 
         .card-wrapper:hover .card-front,
         .card-wrapper:focus-visible .card-front {
-            box-shadow: 0 8px 40px rgba(61, 44, 44, 0.1), 0 2px 8px rgba(61, 44, 44, 0.06);
+            box-shadow: 0 8px 40px rgba(232, 99, 111, 0.12), 0 2px 8px rgba(61, 44, 44, 0.06);
+        }
+
+        /* Heart decorations on card corners */
+        .heart-corner {
+            position: absolute;
+            opacity: 0.15;
+        }
+
+        .heart-corner svg {
+            fill: var(--primary);
+        }
+
+        .hc-tl {
+            top: 14px;
+            left: 14px;
+        }
+
+        .hc-tl svg {
+            width: 18px;
+            height: 18px;
+            transform: rotate(-25deg);
+        }
+
+        .hc-tr {
+            top: 14px;
+            right: 14px;
+        }
+
+        .hc-tr svg {
+            width: 14px;
+            height: 14px;
+            transform: rotate(20deg);
+        }
+
+        .hc-bl {
+            bottom: 14px;
+            left: 14px;
+        }
+
+        .hc-bl svg {
+            width: 14px;
+            height: 14px;
+            transform: rotate(-15deg);
+        }
+
+        .hc-br {
+            bottom: 14px;
+            right: 14px;
+        }
+
+        .hc-br svg {
+            width: 18px;
+            height: 18px;
+            transform: rotate(30deg);
+        }
+
+        .hc-ml {
+            top: 50%;
+            left: 12px;
+            transform: translateY(-50%);
+        }
+
+        .hc-ml svg {
+            width: 10px;
+            height: 10px;
+            opacity: 0.7;
+        }
+
+        .hc-mr {
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+        }
+
+        .hc-mr svg {
+            width: 10px;
+            height: 10px;
+            opacity: 0.7;
         }
 
         .card-icon {
@@ -195,6 +469,19 @@
 
         .card-front .card-icon {
             background: var(--primary-light);
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.06);
+            }
         }
 
         .card-front .card-icon svg {
@@ -230,46 +517,9 @@
             }
         }
 
-        .corner {
-            position: absolute;
-            width: 24px;
-            height: 24px;
-        }
-
-        .corner-tl {
-            top: 14px;
-            left: 14px;
-            border-top: 2px solid var(--primary-border);
-            border-left: 2px solid var(--primary-border);
-            border-top-left-radius: 6px;
-        }
-
-        .corner-tr {
-            top: 14px;
-            right: 14px;
-            border-top: 2px solid var(--primary-border);
-            border-right: 2px solid var(--primary-border);
-            border-top-right-radius: 6px;
-        }
-
-        .corner-bl {
-            bottom: 14px;
-            left: 14px;
-            border-bottom: 2px solid var(--primary-border);
-            border-left: 2px solid var(--primary-border);
-            border-bottom-left-radius: 6px;
-        }
-
-        .corner-br {
-            bottom: 14px;
-            right: 14px;
-            border-bottom: 2px solid var(--primary-border);
-            border-right: 2px solid var(--primary-border);
-            border-bottom-right-radius: 6px;
-        }
-
+        /* Back */
         .card-back {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--heart-5) 100%);
             transform: rotateY(180deg);
             box-shadow: 0 8px 40px var(--primary-shadow);
         }
@@ -281,11 +531,31 @@
         .card-back .card-icon svg {
             width: 40px;
             height: 40px;
-            stroke: #fff;
-            fill: none;
-            stroke-width: 1.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+            stroke: none;
+            fill: #fff;
+            animation: none;
+        }
+
+        .card.flipped .card-back .card-icon svg {
+            animation: heartPop 0.6s ease 0.3s both;
+        }
+
+        @keyframes heartPop {
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+
+            70% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .card-back .label {
@@ -340,32 +610,76 @@
             }
         }
 
-        .dot {
+        /* Back corner hearts */
+        .dot-heart {
             position: absolute;
+            opacity: 0.25;
+        }
+
+        .dot-heart svg {
+            fill: #fff;
+        }
+
+        .dh-tl {
+            top: 16px;
+            left: 16px;
+        }
+
+        .dh-tl svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .dh-tr {
+            top: 16px;
+            right: 16px;
+        }
+
+        .dh-tr svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        .dh-bl {
+            bottom: 16px;
+            left: 16px;
+        }
+
+        .dh-bl svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        .dh-br {
+            bottom: 16px;
+            right: 16px;
+        }
+
+        .dh-br svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .dh-mt {
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .dh-mt svg {
             width: 8px;
             height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
         }
 
-        .dot-tl {
-            top: 16px;
-            left: 16px;
+        .dh-mb {
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
-        .dot-tr {
-            top: 16px;
-            right: 16px;
-        }
-
-        .dot-bl {
-            bottom: 16px;
-            left: 16px;
-        }
-
-        .dot-br {
-            bottom: 16px;
-            right: 16px;
+        .dh-mb svg {
+            width: 8px;
+            height: 8px;
         }
 
         /* ---- Controls ---- */
@@ -414,7 +728,7 @@
         }
 
         .btn-primary:hover {
-            box-shadow: 0 6px 28px rgba(232, 114, 90, 0.35);
+            box-shadow: 0 6px 28px rgba(232, 99, 111, 0.35);
             transform: translateY(-1px);
         }
 
@@ -427,6 +741,13 @@
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
+        }
+
+        .btn-primary .btn-heart-icon {
+            fill: #fff;
+            stroke: none;
+            width: 18px;
+            height: 18px;
         }
 
         .btn-outline {
@@ -475,6 +796,19 @@
             font-size: 0.75rem;
             color: rgba(155, 138, 138, 0.45);
             text-align: center;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .footer svg {
+            width: 12px;
+            height: 12px;
+            fill: rgba(232, 99, 111, 0.2);
+            stroke: none;
         }
 
         /* ---- Overlay / Drawer ---- */
@@ -545,6 +879,16 @@
         .drawer-title {
             font-size: 1.125rem;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .drawer-title svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--primary);
+            stroke: none;
         }
 
         .drawer-count {
@@ -637,18 +981,61 @@
 
 <body>
 
+    <!-- Floating Hearts Background -->
+    <div class="floating-hearts" aria-hidden="true">
+        <div class="floating-heart fh-1"><svg viewBox="0 0 24 24">
+                <path
+                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg></div>
+        <div class="floating-heart fh-2"><svg viewBox="0 0 24 24">
+                <path
+                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg></div>
+        <div class="floating-heart fh-3"><svg viewBox="0 0 24 24">
+                <path
+                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg></div>
+        <div class="floating-heart fh-4"><svg viewBox="0 0 24 24">
+                <path
+                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg></div>
+        <div class="floating-heart fh-5"><svg viewBox="0 0 24 24">
+                <path
+                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg></div>
+        <div class="floating-heart fh-6"><svg viewBox="0 0 24 24">
+                <path
+                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg></div>
+        <div class="floating-heart fh-7"><svg viewBox="0 0 24 24">
+                <path
+                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg></div>
+        <div class="floating-heart fh-8"><svg viewBox="0 0 24 24">
+                <path
+                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg></div>
+        <div class="floating-heart fh-9"><svg viewBox="0 0 24 24">
+                <path
+                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg></div>
+        <div class="floating-heart fh-10"><svg viewBox="0 0 24 24">
+                <path
+                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg></div>
+    </div>
+
     <div class="container">
         <!-- Header -->
         <header class="header fade-in">
             <div class="icon-circle">
                 <svg viewBox="0 0 24 24">
-                    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
-                    <path d="M7 2v20" />
-                    <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
+                    <path
+                        d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                 </svg>
             </div>
             <h1>小雨，今天吃什么？</h1>
-            <p class="subtitle">选择困难？让缘分帮你决定~</p>
+            <p class="subtitle">选择困难？让爱帮你决定~</p>
         </header>
 
         <!-- Card -->
@@ -656,10 +1043,30 @@
             <div class="card" id="card">
                 <!-- Front -->
                 <div class="card-face card-front">
-                    <div class="corner corner-tl"></div>
-                    <div class="corner corner-tr"></div>
-                    <div class="corner corner-bl"></div>
-                    <div class="corner corner-br"></div>
+                    <div class="heart-corner hc-tl"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg></div>
+                    <div class="heart-corner hc-tr"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg></div>
+                    <div class="heart-corner hc-bl"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg></div>
+                    <div class="heart-corner hc-br"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg></div>
+                    <div class="heart-corner hc-ml"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg></div>
+                    <div class="heart-corner hc-mr"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg></div>
                     <div class="card-icon">
                         <svg viewBox="0 0 24 24">
                             <circle cx="12" cy="12" r="10" />
@@ -672,10 +1079,30 @@
                 </div>
                 <!-- Back -->
                 <div class="card-face card-back">
-                    <div class="dot dot-tl"></div>
-                    <div class="dot dot-tr"></div>
-                    <div class="dot dot-bl"></div>
-                    <div class="dot dot-br"></div>
+                    <div class="dot-heart dh-tl"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg></div>
+                    <div class="dot-heart dh-tr"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg></div>
+                    <div class="dot-heart dh-bl"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg></div>
+                    <div class="dot-heart dh-br"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg></div>
+                    <div class="dot-heart dh-mt"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg></div>
+                    <div class="dot-heart dh-mb"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg></div>
                     <div class="card-icon">
                         <svg viewBox="0 0 24 24">
                             <path
@@ -692,13 +1119,9 @@
         <!-- Controls -->
         <div class="controls fade-in">
             <button class="btn btn-primary" id="drawBtn">
-                <svg viewBox="0 0 24 24">
+                <svg class="btn-heart-icon" viewBox="0 0 24 24">
                     <path
-                        d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-                    <path d="M5 3v4" />
-                    <path d="M19 17v4" />
-                    <path d="M3 5h4" />
-                    <path d="M17 19h4" />
+                        d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                 </svg>
                 开始抽奖
             </button>
@@ -719,7 +1142,17 @@
         </div>
     </div>
 
-    <p class="footer">不满意？点击「再来一次」可以重新选择哦</p>
+    <p class="footer">
+        <svg viewBox="0 0 24 24">
+            <path
+                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+        </svg>
+        不满意？点击「再来一次」可以重新选择哦
+        <svg viewBox="0 0 24 24">
+            <path
+                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+        </svg>
+    </p>
 
     <!-- Drawer Overlay -->
     <div class="overlay" id="overlay"></div>
@@ -729,7 +1162,13 @@
         <div class="drawer-handle-area">
             <div class="drawer-handle"></div>
             <div class="drawer-header">
-                <span class="drawer-title">候选菜谱</span>
+                <span class="drawer-title">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                    </svg>
+                    候选菜谱
+                </span>
                 <span class="drawer-count" id="drawerCount"></span>
             </div>
         </div>
@@ -770,8 +1209,8 @@
         var result = '';
 
         // ---- Init ----
-        statusEl.textContent = '共 ' + dishes.length + ' 道菜等你翻牌';
-        drawerCount.textContent = dishes.length + ' 道菜';
+        statusEl.textContent = '\u5171 ' + dishes.length + ' \u9053\u83DC\u7B49\u4F60\u7FFB\u724C';
+        drawerCount.textContent = dishes.length + ' \u9053\u83DC';
 
         dishes.forEach(function (name) {
             var tag = document.createElement('span');
@@ -797,7 +1236,6 @@
         menuBtn.addEventListener('click', openDrawer);
         overlay.addEventListener('click', closeDrawer);
 
-        // Swipe down to close
         (function () {
             var startY = 0;
             var dragging = false;
@@ -842,10 +1280,10 @@
 
                 drawBtn.style.display = 'none';
                 resetBtn.style.display = 'inline-flex';
-                statusEl.textContent = '就决定是你了：' + result + ' !';
+                statusEl.textContent = '\u5C31\u51B3\u5B9A\u662F\u4F60\u4E86\uFF1A' + result + ' !';
                 statusEl.classList.add('highlight');
-                announceEl.textContent = '抽中了：' + result;
-                cardWrap.setAttribute('aria-label', '今天吃：' + result);
+                announceEl.textContent = '\u62BD\u4E2D\u4E86\uFF1A' + result;
+                cardWrap.setAttribute('aria-label', '\u4ECA\u5929\u5403\uFF1A' + result);
 
                 document.querySelectorAll('.dish-tag').forEach(function (t) {
                     if (t.dataset.name === result) t.classList.add('active');
@@ -867,9 +1305,9 @@
 
             drawBtn.style.display = 'inline-flex';
             resetBtn.style.display = 'none';
-            statusEl.textContent = '共 ' + dishes.length + ' 道菜等你翻牌';
+            statusEl.textContent = '\u5171 ' + dishes.length + ' \u9053\u83DC\u7B49\u4F60\u7FFB\u724C';
             statusEl.classList.remove('highlight');
-            cardWrap.setAttribute('aria-label', '点击翻转卡片抽奖');
+            cardWrap.setAttribute('aria-label', '\u70B9\u51FB\u7FFB\u8F6C\u5361\u7247\u62BD\u5956');
 
             document.querySelectorAll('.dish-tag').forEach(function (t) {
                 t.classList.remove('active');
@@ -906,7 +1344,7 @@
 
         var particles = [];
         var rafId = null;
-        var heartColors = ['#E8725A', '#F4A59A', '#FFD4CC', '#FF8C7C', '#E86A6A', '#FFB7A5'];
+        var heartColors = ['#E8636F', '#F4A0A8', '#FFCDD2', '#FF8A95', '#D14D5A', '#FFB7A5', '#FF6B81'];
 
         function drawHeart (cx, cy, size, rotation, color, alpha) {
             ctx.save();
@@ -926,20 +1364,20 @@
 
         function launchConfetti () {
             particles = [];
-            for (var i = 0; i < 50; i++) {
+            for (var i = 0; i < 65; i++) {
                 var angle = Math.random() * Math.PI * 2;
-                var speed = Math.random() * 6 + 3;
+                var speed = Math.random() * 7 + 3;
                 particles.push({
-                    x: canvas.width / 2 + (Math.random() - 0.5) * 60,
+                    x: canvas.width / 2 + (Math.random() - 0.5) * 80,
                     y: canvas.height / 2 + 40,
                     vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed - 4,
-                    size: Math.random() * 10 + 8,
+                    vy: Math.sin(angle) * speed - 5,
+                    size: Math.random() * 12 + 8,
                     color: heartColors[Math.floor(Math.random() * heartColors.length)],
                     rotation: Math.random() * Math.PI * 2,
                     rotSpeed: (Math.random() - 0.5) * 0.12,
                     alpha: 1,
-                    gravity: 0.12 + Math.random() * 0.06,
+                    gravity: 0.1 + Math.random() * 0.06,
                     life: 0,
                 });
             }
@@ -960,7 +1398,7 @@
                 p.y += p.vy;
                 p.vx *= 0.99;
                 p.rotation += p.rotSpeed;
-                if (p.life > 40) p.alpha -= 0.025;
+                if (p.life > 45) p.alpha -= 0.02;
                 drawHeart(p.x, p.y, p.size, p.rotation, p.color, Math.max(0, p.alpha));
             }
             ctx.globalAlpha = 1;
