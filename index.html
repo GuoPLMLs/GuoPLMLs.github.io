@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>GuoPLMLs.github.io</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 24px;
+      margin-bottom: 40px;
+      text-align: center;
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    /* 基础按钮样式 */
+    .btn {
+      position: relative;
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      text-align: center;
+      display: block;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 1. 发光渐变按钮 */
+    .btn-glow {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-glow:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 10px rgba(102, 126, 234, 0.6),
+                  0 0 40px rgba(102, 126, 234, 0.4);
+    }
+
+    /* 2. 波纹效果按钮 */
+    .btn-ripple {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+    }
+
+    .btn-ripple:active {
+      transform: scale(0.95);
+    }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transform: scale(0);
+      animation: ripple-animation 0.6s linear;
+      pointer-events: none;
+    }
+
+    @keyframes ripple-animation {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* 3. 霓虹边框按钮 */
+    .btn-neon {
+      background: transparent;
+      color: #00d4ff;
+      border: 2px solid #00d4ff;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.3),
+                  inset 0 0 10px rgba(0, 212, 255, 0.1);
+      animation: neon-pulse 2s ease-in-out infinite;
+    }
+
+    .btn-neon:active {
+      transform: scale(0.95);
+      background: rgba(0, 212, 255, 0.1);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.6),
+                  0 0 40px rgba(0, 212, 255, 0.4),
+                  inset 0 0 20px rgba(0, 212, 255, 0.2);
+    }
+
+    @keyframes neon-pulse {
+      0%, 100% {
+        box-shadow: 0 0 10px rgba(0, 212, 255, 0.3),
+                    inset 0 0 10px rgba(0, 212, 255, 0.1);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.5),
+                    0 0 30px rgba(0, 212, 255, 0.3),
+                    inset 0 0 15px rgba(0, 212, 255, 0.2);
+      }
+    }
+
+    /* 4. 弹性按钮 */
+    .btn-bounce {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+      transition: transform 0.1s ease;
+    }
+
+    .btn-bounce.bouncing {
+      animation: bounce-effect 0.4s ease;
+    }
+
+    @keyframes bounce-effect {
+      0% { transform: scale(1); }
+      30% { transform: scale(0.85); }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+
+    /* 5. 滑动填充按钮 */
+    .btn-slide {
+      background: transparent;
+      color: #ff6b6b;
+      border: 2px solid #ff6b6b;
+      z-index: 1;
+    }
+
+    .btn-slide::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+      transition: width 0.3s ease;
+      z-index: -1;
+    }
+
+    .btn-slide:active {
+      color: #fff;
+      transform: scale(0.95);
+    }
+
+    .btn-slide:active::before {
+      width: 100%;
+    }
+
+    /* 6. 3D 立体按钮 */
+    .btn-3d {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: #fff;
+      box-shadow: 0 6px 0 #2d7dd2,
+                  0 8px 15px rgba(79, 172, 254, 0.4);
+      transform: translateY(0);
+    }
+
+    .btn-3d:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #2d7dd2,
+                  0 4px 10px rgba(79, 172, 254, 0.4);
+    }
+
+    /* 7. 闪光按钮 */
+    .btn-shine {
+      background: linear-gradient(135deg, #232526 0%, #414345 100%);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-shine::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+      );
+      transition: left 0.5s ease;
+    }
+
+    .btn-shine:active::after {
+      left: 100%;
+    }
+
+    .btn-shine:active {
+      transform: scale(0.95);
+    }
+
+    /* 8. 脉冲按钮 */
+    .btn-pulse {
+      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(250, 112, 154, 0.4);
+    }
+
+    .btn-pulse::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: inherit;
+      border-radius: inherit;
+      z-index: -1;
+      animation: pulse-ring 2s ease-out infinite;
+    }
+
+    .btn-pulse:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    /* 提示文字 */
+    .hint {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 12px;
+      margin-top: 40px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>GuoPLMLs.github.io</h1>
+  
+  <div class="button-container">
+    <!-- 修改下面的 href 值来设置跳转链接 -->
+    <a href="/loveRecipe/index.html" class="btn btn-glow">抽奖吃晚饭</a>
+    <a href="/fireworks/index.html" class="btn btn-neon">烟花易冷</a>
+    <a href="/cherryBlossoms/index.html" class="btn btn-bounce" onclick="addBounce(this)">风吹满樱花</a>
+    <a href="/christmasTree/index.html" class="btn btn-ripple" onclick="createRipple(event)">圣诞树</a>
+    <a href="/loveEffect1/index.html" class="btn btn-pulse">爱心追尾❤</a>
+    <a href="/loveEffect2/index.html" class="btn btn-slide">心动(❤ ω ❤)</a>
+    <a href="/loveEffect3/index.html" class="btn btn-3d">心跳💓</a>
+    <a href="#link7" class="btn btn-shine">闪光效果</a>
+  </div>
+
+  <p class="hint">点击按钮查看效果</p>
+
+  <script>
+    // ============================================
+    // 跳转链接配置 - 在这里修改你的链接
+    // ============================================
+    const links = {
+      link1: '#your-link-1',  // 发光渐变按钮
+      link2: '#your-link-2',  // 波纹效果按钮
+      link3: '#your-link-3',  // 霓虹边框按钮
+      link4: '#your-link-4',  // 弹性效果按钮
+      link5: '#your-link-5',  // 滑动填充按钮
+      link6: '#your-link-6',  // 3D 立体按钮
+      link7: '#your-link-7',  // 闪光效果按钮
+      link8: '#your-link-8',  // 脉冲效果按钮
+    };
+
+    // 波纹效果
+    function createRipple(event) {
+      const button = event.currentTarget;
+      const rect = button.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      
+      // 获取点击位置
+      const x = (event.touches ? event.touches[0].clientX : event.clientX) - rect.left - size / 2;
+      const y = (event.touches ? event.touches[0].clientY : event.clientY) - rect.top - size / 2;
+      
+      // 创建波纹元素
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      
+      button.appendChild(ripple);
+      
+      // 动画结束后移除元素
+      setTimeout(() => ripple.remove(), 600);
+    }
+
+    // 弹性效果
+    function addBounce(button) {
+      button.classList.remove('bouncing');
+      void button.offsetWidth; // 触发重绘
+      button.classList.add('bouncing');
+    }
+
+    // 为波纹按钮添加触摸事件
+    document.querySelector('.btn-ripple').addEventListener('touchstart', createRipple);
+  </script>
+</body>
+</html>

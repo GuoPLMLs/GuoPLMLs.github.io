@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>浪漫爱心动画</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body {
+      background: #0a0a0f;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 设置按钮 */
+    .settings-toggle {
+      position: fixed;
+      top: max(12px, env(safe-area-inset-top, 12px));
+      right: max(12px, env(safe-area-inset-right, 12px));
+      width: 44px;
+      height: 44px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+    }
+
+    .settings-toggle:active {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(0.95);
+    }
+
+    .settings-toggle svg {
+      width: 22px;
+      height: 22px;
+      fill: white;
+    }
+
+    /* 设置面板 - 移动端底部弹出 */
+    .settings-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 15, 20, 0.98);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      padding: 20px;
+      padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
+      max-height: 70vh;
+      overflow-y: auto;
+      z-index: 999;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .settings-panel.open {
+      transform: translateY(0);
+    }
+
+    .settings-panel::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+      margin: 0 auto 16px;
+    }
+
+    .settings-panel h3 {
+      color: white;
+      font-size: 20px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .settings-section {
+      margin-bottom: 24px;
+    }
+
+    .settings-section h4 {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+
+    .color-presets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .color-preset {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.2s ease;
+      min-height: 48px;
+    }
+
+    .color-preset:active {
+      transform: scale(0.9);
+    }
+
+    .color-preset.active {
+      border-color: white;
+      box-shadow: 0 0 20px currentColor;
+    }
+
+    .custom-color {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+    }
+
+    .custom-color input[type="color"] {
+      width: 48px;
+      height: 48px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: transparent;
+      padding: 0;
+    }
+
+    .custom-color input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    .custom-color input[type="color"]::-webkit-color-swatch {
+      border: none;
+      border-radius: 10px;
+    }
+
+    .custom-color span {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 15px;
+    }
+
+    /* 文字输入 */
+    .text-input-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .text-input-group input {
+      flex: 1;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .text-input-group input:focus {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .text-input-group input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .text-input-group button {
+      padding: 14px 20px;
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .text-input-group button:active {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .text-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .text-tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      font-size: 14px;
+      color: white;
+    }
+
+    .text-tag button {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      padding: 0 0 0 4px;
+    }
+
+    .text-tag button:active {
+      color: white;
+    }
+
+    /* 遮罩层 */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* 动态文字显示 */
+    .floating-texts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .floating-text {
+      position: absolute;
+      font-size: 16px;
+      font-weight: 300;
+      white-space: nowrap;
+      text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+      animation: floatText 6s ease-in-out infinite;
+    }
+
+    @keyframes floatText {
+      0%, 100% {
+        opacity: 0.4;
+        transform: translate(-50%, -50%) translateY(0) scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(-8px) scale(1.05);
+      }
+    }
+
+    /* 桌面端适配 */
+    @media (min-width: 768px) {
+      .settings-panel {
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        bottom: auto;
+        left: auto;
+        width: 320px;
+        max-height: calc(100vh - 100px);
+        border-radius: 20px;
+        transform: translateX(20px);
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .settings-panel.open {
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .settings-panel::before {
+        display: none;
+      }
+
+      .overlay {
+        display: none;
+      }
+
+      .floating-text {
+        font-size: 18px;
+      }
+
+      .color-presets {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+
+      .color-preset {
+        min-height: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <!-- 遮罩层 -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- 设置按钮 -->
+  <button class="settings-toggle" id="settingsToggle" aria-label="打开设置">
+    <svg viewBox="0 0 24 24">
+      <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+    </svg>
+  </button>
+
+  <!-- 设置面板 -->
+  <div class="settings-panel" id="settingsPanel">
+    <h3>设置</h3>
+    
+    <div class="settings-section">
+      <h4>主题颜色</h4>
+      <div class="color-presets" id="colorPresets"></div>
+      <div class="custom-color">
+        <input type="color" id="customColor" value="#4da6ff">
+        <span>自定义颜色</span>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h4>动态文字</h4>
+      <div class="text-input-group">
+        <input type="text" id="textInput" placeholder="输入文字..." maxlength="20">
+        <button id="addTextBtn">添加</button>
+      </div>
+      <div class="text-list" id="textList"></div>
+    </div>
+  </div>
+
+  <!-- 动态文字容器 -->
+  <div class="floating-texts" id="floatingTexts"></div>
+
+  <script>
+    // 配置
+    const config = {
+      themeColor: '#4da6ff',
+      texts: ['Forever Love', 'I Love You', 'Be Together']
+    };
+
+    // 预设颜色
+    const colorPresets = [
+      { name: '天空蓝', color: '#4da6ff' },
+      { name: '浪漫粉', color: '#ff6b9d' },
+      { name: '热情红', color: '#ff4757' },
+      { name: '神秘紫', color: '#a55eea' },
+      { name: '活力橙', color: '#ff9f43' },
+      { name: '清新绿', color: '#26de81' },
+      { name: '金色', color: '#f7d794' },
+      { name: '青色', color: '#00d2d3' }
+    ];
+
+    // Canvas 设置
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, centerX, centerY, scale;
+    let dpr = window.devicePixelRatio || 1;
+
+    function resize() {
+      dpr = window.devicePixelRatio || 1;
+      width = window.innerWidth;
+      height = window.innerHeight;
+      
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      
+      ctx.scale(dpr, dpr);
+      
+      centerX = width / 2;
+      centerY = height / 2;
+      // 移动端使用更小的缩放
+      scale = Math.min(width, height) * (width < 768 ? 0.22 : 0.28);
+      
+      renderFloatingTexts();
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    // 爱心参数方程
+    function heartX(t) {
+      return 16 * Math.pow(Math.sin(t), 3);
+    }
+
+    function heartY(t) {
+      return -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+    }
+
+    // 颜色转换
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : { r: 77, g: 166, b: 255 };
+    }
+
+    // 射线类 - 自然弯曲的光纤效果
+    class RayLine {
+      constructor(t) {
+        const baseX = centerX + heartX(t) * scale / 16;
+        const baseY = centerY + heartY(t) * scale / 16;
+        
+        // 计算向外的方向
+        const toCenterX = centerX - baseX;
+        const toCenterY = centerY - baseY;
+        const toCenterLen = Math.sqrt(toCenterX * toCenterX + toCenterY * toCenterY);
+        let outX = -toCenterX / toCenterLen;
+        let outY = -toCenterY / toCenterLen;
+        
+        // 随机角度偏移
+        const angleDeviation = (Math.random() - 0.5) * 0.6;
+        const cosA = Math.cos(angleDeviation);
+        const sinA = Math.sin(angleDeviation);
+        const dirX = outX * cosA - outY * sinA;
+        const dirY = outX * sinA + outY * cosA;
+        
+        // 根据屏幕大小调整长度
+        const baseLength = Math.min(width, height) * 0.15;
+        const lengthVariant = Math.random();
+        this.length = lengthVariant < 0.3 
+          ? Math.random() * baseLength * 0.6 + baseLength * 0.4
+          : lengthVariant < 0.7 
+            ? Math.random() * baseLength + baseLength * 0.8
+            : Math.random() * baseLength * 1.5 + baseLength * 1.2;
+        
+        this.life = 1;
+        this.maxLife = Math.random() * 80 + 50;
+        this.width = Math.random() * 0.8 + 0.2;
+        this.brightness = Math.random() * 0.6 + 0.4;
+        this.tipDotSize = Math.random() * 2 + 1;
+        
+        // 生成平滑弯曲路径
+        this.points = [];
+        let currentX = baseX;
+        let currentY = baseY;
+        let velocityX = dirX;
+        let velocityY = dirY;
+        const curveBias = (Math.random() - 0.5) * 0.15;
+        const segments = 50;
+        
+        for (let i = 0; i <= segments; i++) {
+          this.points.push({ x: currentX, y: currentY });
+          
+          const progress = i / segments;
+          const stepLength = (this.length / segments) * (1 + progress * 0.5);
+          const curveStrength = progress * progress * 0.08;
+          const randomCurve = (Math.random() - 0.5) * curveStrength + curveBias * progress;
+          
+          const newVelX = velocityX * Math.cos(randomCurve) - velocityY * Math.sin(randomCurve);
+          const newVelY = velocityX * Math.sin(randomCurve) + velocityY * Math.cos(randomCurve);
+          velocityX = newVelX;
+          velocityY = newVelY;
+          
+          const velLen = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+          velocityX /= velLen;
+          velocityY /= velLen;
+          
+          currentX += velocityX * stepLength;
+          currentY += velocityY * stepLength;
+        }
+      }
+
+      update() {
+        this.life -= 1 / this.maxLife;
+      }
+
+      draw(rgb) {
+        if (this.life <= 0 || this.points.length < 2) return;
+
+        ctx.beginPath();
+        ctx.moveTo(this.points[0].x, this.points[0].y);
+        
+        // 使用二次贝塞尔曲线绘制平滑曲线
+        for (let i = 1; i < this.points.length - 2; i++) {
+          const xc = (this.points[i].x + this.points[i + 1].x) / 2;
+          const yc = (this.points[i].y + this.points[i + 1].y) / 2;
+          ctx.quadraticCurveTo(this.points[i].x, this.points[i].y, xc, yc);
+        }
+        
+        const last = this.points[this.points.length - 1];
+        const secondLast = this.points[this.points.length - 2];
+        ctx.quadraticCurveTo(secondLast.x, secondLast.y, last.x, last.y);
+
+        // 渐变效果
+        const gradient = ctx.createLinearGradient(
+          this.points[0].x, this.points[0].y,
+          last.x, last.y
+        );
+        const alpha = this.life * this.brightness;
+        gradient.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`);
+        gradient.addColorStop(0.2, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.8})`);
+        gradient.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.5})`);
+        gradient.addColorStop(0.8, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.2})`);
+        gradient.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = this.width * (0.5 + this.life * 0.5);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+
+        // 末端亮点
+        ctx.beginPath();
+        ctx.arc(last.x, last.y, this.tipDotSize * this.life, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.life * 0.8})`;
+        ctx.fill();
+      }
+    }
+
+    // 火花粒子类
+    class Spark {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 3 + 1;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.life = 1;
+        this.maxLife = Math.random() * 30 + 20;
+        this.size = Math.random() * 2 + 1;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vx *= 0.96;
+        this.vy *= 0.96;
+        this.life -= 1 / this.maxLife;
+      }
+
+      draw(rgb) {
+        if (this.life <= 0) return;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${this.life})`;
+        ctx.fill();
+      }
+    }
+
+    // 动画状态
+    let rayLines = [];
+    let sparks = [];
+    let litPoints = [];
+    let fuseProgress = 0;
+    const fuseSpeed = 0.006;
+    let frameCount = 0;
+    let lastTime = 0;
+
+    // 主动画循环
+    function animate(currentTime) {
+      // 控制帧率，移动端降低到30fps以节省电量
+      const isMobile = width < 768;
+      const targetFPS = isMobile ? 30 : 60;
+      const frameInterval = 1000 / targetFPS;
+      
+      if (currentTime - lastTime < frameInterval) {
+        requestAnimationFrame(animate);
+        return;
+      }
+      lastTime = currentTime;
+
+      // 清除画布
+      ctx.fillStyle = 'rgba(10, 10, 15, 0.15)';
+      ctx.fillRect(0, 0, width, height);
+
+      const rgb = hexToRgb(config.themeColor);
+      fuseProgress += fuseSpeed;
+      if (fuseProgress > Math.PI * 2) {
+        fuseProgress -= Math.PI * 2;
+      }
+      frameCount++;
+
+      // 记录点亮的点
+      if (frameCount % 2 === 0) {
+        litPoints.push({
+          t: fuseProgress,
+          brightness: 1
+        });
+      }
+
+      // 绘制已点亮的爱心轮廓
+      for (let i = litPoints.length - 1; i >= 0; i--) {
+        const p = litPoints[i];
+        p.brightness -= 0.003;
+        if (p.brightness <= 0) {
+          litPoints.splice(i, 1);
+          continue;
+        }
+        const x = centerX + heartX(p.t) * scale / 16;
+        const y = centerY + heartY(p.t) * scale / 16;
+        ctx.beginPath();
+        ctx.arc(x, y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${p.brightness * 0.8})`;
+        ctx.fill();
+      }
+
+      // 导火线位置
+      const fuseX = centerX + heartX(fuseProgress) * scale / 16;
+      const fuseY = centerY + heartY(fuseProgress) * scale / 16;
+
+      // 导火线发光效果
+      const glowSize = isMobile ? 25 : 30;
+      const glowGradient = ctx.createRadialGradient(fuseX, fuseY, 0, fuseX, fuseY, glowSize);
+      glowGradient.addColorStop(0, `rgba(255, 255, 255, 0.9)`);
+      glowGradient.addColorStop(0.3, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6)`);
+      glowGradient.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
+      ctx.beginPath();
+      ctx.arc(fuseX, fuseY, glowSize, 0, Math.PI * 2);
+      ctx.fillStyle = glowGradient;
+      ctx.fill();
+
+      // 导火线核心
+      ctx.beginPath();
+      ctx.arc(fuseX, fuseY, isMobile ? 4 : 5, 0, Math.PI * 2);
+      ctx.fillStyle = 'white';
+      ctx.fill();
+
+      // 生成射线 - 移动端减少数量
+      const rayCount = isMobile ? 3 : 5;
+      for (let i = 0; i < rayCount; i++) {
+        const offsetT = fuseProgress + (Math.random() - 0.5) * 0.15;
+        rayLines.push(new RayLine(offsetT));
+      }
+
+      // 生成火花
+      const sparkCount = isMobile ? 2 : 3;
+      for (let i = 0; i < sparkCount; i++) {
+        sparks.push(new Spark(fuseX, fuseY));
+      }
+
+      // 更新和绘制射线
+      for (let i = rayLines.length - 1; i >= 0; i--) {
+        rayLines[i].update();
+        if (rayLines[i].life <= 0) {
+          rayLines.splice(i, 1);
+        } else {
+          rayLines[i].draw(rgb);
+        }
+      }
+
+      // 更新和绘制火花
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        sparks[i].update();
+        if (sparks[i].life <= 0) {
+          sparks.splice(i, 1);
+        } else {
+          sparks[i].draw(rgb);
+        }
+      }
+
+      // 限制数组大小 - 移动端更严格
+      const maxRays = isMobile ? 300 : 600;
+      const maxSparks = isMobile ? 150 : 300;
+      if (rayLines.length > maxRays) {
+        rayLines.splice(0, Math.floor(maxRays / 4));
+      }
+      if (sparks.length > maxSparks) {
+        sparks.splice(0, Math.floor(maxSparks / 4));
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // 设置面板逻辑
+    const settingsToggle = document.getElementById('settingsToggle');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const overlay = document.getElementById('overlay');
+    const colorPresetsContainer = document.getElementById('colorPresets');
+    const customColorInput = document.getElementById('customColor');
+    const textInput = document.getElementById('textInput');
+    const addTextBtn = document.getElementById('addTextBtn');
+    const textList = document.getElementById('textList');
+    const floatingTexts = document.getElementById('floatingTexts');
+
+    // 切换设置面板
+    function togglePanel(open) {
+      if (open === undefined) {
+        open = !settingsPanel.classList.contains('open');
+      }
+      settingsPanel.classList.toggle('open', open);
+      overlay.classList.toggle('open', open);
+    }
+
+    settingsToggle.addEventListener('click', () => togglePanel());
+    overlay.addEventListener('click', () => togglePanel(false));
+
+    // 初始化颜色预设
+    colorPresets.forEach((preset, index) => {
+      const btn = document.createElement('button');
+      btn.className = 'color-preset' + (index === 0 ? ' active' : '');
+      btn.style.backgroundColor = preset.color;
+      btn.title = preset.name;
+      btn.setAttribute('aria-label', preset.name);
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.color-preset').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        config.themeColor = preset.color;
+        updateFloatingTextsColor();
+      });
+      colorPresetsContainer.appendChild(btn);
+    });
+
+    // 自定义颜色
+    customColorInput.addEventListener('input', (e) => {
+      config.themeColor = e.target.value;
+      document.querySelectorAll('.color-preset').forEach(b => b.classList.remove('active'));
+      updateFloatingTextsColor();
+    });
+
+    // 添加文字
+    function addText(text) {
+      if (!text.trim() || config.texts.length >= 12) return;
+      config.texts.push(text.trim());
+      renderTextList();
+      renderFloatingTexts();
+    }
+
+    addTextBtn.addEventListener('click', () => {
+      addText(textInput.value);
+      textInput.value = '';
+    });
+
+    textInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addText(textInput.value);
+        textInput.value = '';
+      }
+    });
+
+    // 渲染文字列表
+    function renderTextList() {
+      textList.innerHTML = '';
+      config.texts.forEach((text, index) => {
+        const tag = document.createElement('div');
+        tag.className = 'text-tag';
+        tag.innerHTML = `
+          <span>${text}</span>
+          <button data-index="${index}" aria-label="删除">&times;</button>
+        `;
+        tag.querySelector('button').addEventListener('click', () => {
+          config.texts.splice(index, 1);
+          renderTextList();
+          renderFloatingTexts();
+        });
+        textList.appendChild(tag);
+      });
+    }
+
+    // 渲染浮动文字
+    function renderFloatingTexts() {
+      floatingTexts.innerHTML = '';
+      const radius = Math.min(width, height) * (width < 768 ? 0.32 : 0.38);
+      
+      config.texts.forEach((text, index) => {
+        const angle = (index / config.texts.length) * Math.PI * 2 - Math.PI / 2;
+        const x = 50 + (Math.cos(angle) * radius / width) * 100;
+        const y = 50 + (Math.sin(angle) * radius / height) * 100;
+        
+        const el = document.createElement('div');
+        el.className = 'floating-text';
+        el.textContent = text;
+        el.style.left = `${x}%`;
+        el.style.top = `${y}%`;
+        el.style.color = config.themeColor;
+        el.style.animationDelay = `${index * 0.5}s`;
+        floatingTexts.appendChild(el);
+      });
+    }
+
+    // 更新浮动文字颜色
+    function updateFloatingTextsColor() {
+      document.querySelectorAll('.floating-text').forEach(el => {
+        el.style.color = config.themeColor;
+      });
+    }
+
+    // 初始化
+    renderTextList();
+    renderFloatingTexts();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
